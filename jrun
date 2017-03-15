@@ -126,12 +126,15 @@ done
 endpoint=$(expand "$endpoint")
 test "$endpoint" || endpoint=usage
 
-eRemain=$endpoint
+# Inject a space before each plus and bang.
+check sed
+eRemain=$(echo "$endpoint" | sed 's/\([+!]\)/ \1/g')
+
 while test "$eRemain"
 do
-	# Process the artifact string before the plus.
-	artifact=${eRemain%%+*}
-	let flen=${#artifact}+1
+	# Process the artifact string before the first space.
+	fragment=${eRemain%% *}
+	let flen=${#fragment}+1
 	eRemain=${eRemain:$flen}
 
 	artifact=$(expand "$artifact")
